@@ -65,7 +65,12 @@ HTTP_STATUS=$(echo "${RESPONSE}" | tail -n 1)
 echo "==> Result:"
 echo "HTTP Status Code : ${HTTP_STATUS}"
 echo "Client Latency   : ${CLIENT_LATENCY} ms"
-echo "Response Body    : ${HTTP_BODY}"
+echo "Response Body    :"
+if command -v jq >/dev/null 2>&1; then
+  echo "${HTTP_BODY}" | jq . || echo "${HTTP_BODY}"
+else
+  echo "${HTTP_BODY}"
+fi
 
 if [ "${HTTP_STATUS}" -ne 200 ]; then
   echo "ERROR: Manual test failed with status ${HTTP_STATUS}" >&2
